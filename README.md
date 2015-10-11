@@ -3,9 +3,7 @@
 This challenge focuses on using Pygame's different event types to drag a measuring line between two points on a map. The code provided
  allows the user to select from a menu of six regional world maps and displays the map on the screen, the rest is up to you.
 
-##Github repository: https://github.com/reddit-pygame/map-distance-challenge
-
-##Reddit Challenge thread: 
+##Reddit Challenge thread: https://www.reddit.com/r/pygame/comments/3oc19d/map_distance_challenge/
 
 #Challenge
 
