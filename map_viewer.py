@@ -27,10 +27,13 @@ class MapViewer(GameState):
             self.quit = True
 
         if event.type == pg.MOUSEBUTTONUP:
-            self.create_new_line(event.pos)
+            if self.line and self.line.moving:
+                self.line.set_end(event.pos)
+            else:
+                self.create_new_line(event.pos)
 
         if event.type == pg.MOUSEMOTION:
-            if self.line:
+            if self.line and self.line.moving:
                 self.line.end = event.pos
 
     def update(self, dt):
