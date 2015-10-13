@@ -9,7 +9,7 @@ class Line(object):
     def __init__(self, start):
         self.start = start
         self.end = start
-        self.color = [randint(0, 255) for _ in range(3)]
+        self.point_color = [randint(0, 255) for _ in range(3)]
         self.moving = True
 
     def update(self):
@@ -19,10 +19,13 @@ class Line(object):
 
     def draw(self, surface):
         pg.draw.line(surface, self.color, self.start, self.end, 3)
+        pg.draw.circle(surface, self.point_color, self.start, 3)
+        pg.draw.circle(surface, self.point_color, self.end, 3)
 
     def set_end(self, pos):
         self.end = pos
         self.moving = False
+        self.distance = self.calculate_distance()
 
     def calculate_distance(self):
         p1 = self.start

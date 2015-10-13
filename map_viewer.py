@@ -22,49 +22,78 @@ class MapViewer(GameState):
         self.rect = self.map.get_rect(center=self.screen_rect.center)
         self.map_scale = prepare.SCALES[self.map_name]
 
-        self.line = None
-        self.distance = 0.0
+        self.lines = []
+        self.is_path_end = False
 
         self.font = prepare.FONTS["Saniretro"]
         self.distance_label = None
         self.text_color = (255, 255, 255)
         self.bg_color = (0, 0, 0)
+        info = "Left click to add a point, Right click to end path"
+        self.info_labe = Label(self.font, 20, info,
+                               self.text_color,
+                               {"bottomleft": self.screen_rect.bottomleft},
+                               self.bg_color)
 
     def get_event(self, event):
         if event.type == pg.QUIT:
             self.quit = True
 
         if event.type == pg.MOUSEBUTTONUP:
-            if self.line and self.line.moving:
-                self.set_anchor_point(event.pos)
-            else:
-                self.create_new_line(event.pos)
+            if event.button == 1:  # left click
+                if self.lines and self.lines[-1].moving:
+                    self.set_anchor_point(event.pos)
+                else:
+                    if self.is_path_end:
+                        self.create_new_path()
+                    self.create_new_line(event.pos)
+
+            if event.button == 3:  # right click
+                self.end_path(event.pos)
 
         if event.type == pg.MOUSEMOTION:
-            if self.line and self.line.moving:
-                self.line.end = event.pos
+            if self.lines and self.lines[-1].moving:
+                self.lines[-1].end = event.pos
 
     def update(self, dt):
-        if self.line:
-            self.line.update()
+        if self.lines:
+            for line in self.lines:
+                line.update()
 
     def draw(self, surface):
         surface.fill(pg.Color("gray2"))
         surface.blit(self.map, self.rect)
-        if self.line:
-            self.line.draw(surface)
+        if self.lines:
+            for line in self.lines:
+                line.draw(surface)
             self.distance_label.draw(surface)
+        self.info_labe.draw(surface)
 
     def create_new_line(self, pos):
-        self.line = Line(pos)
-        self.distance = 0.0
-        text = "{:.2f} miles".format(self.distance)
+        line = Line(pos)
+        self.lines.append(line)
+        text = "{:.2f} miles".format(0.0)
         self.distance_label = Label(self.font, 20, text,
                                     self.text_color, {"topleft": (0, 0)},
                                     self.bg_color)
 
     def set_anchor_point(self, pos):
-        self.line.set_end(pos)
-        self.distance = self.line.distance * self.map_scale
-        text = "{:.2f} miles".format(self.distance)
-        self.distance_label.set_text(text)
+        self.lines[-1].set_end(pos)
+        self.distance_label.set_text(self.distance)
+        line = Line(pos)
+        self.lines.append(line)
+
+    def create_new_path(self):
+        self.lines = []
+
+    def end_path(self, pos):
+        self.lines[-1].set_end(pos)
+        self.is_path_end = True
+
+    @property
+    def distance(self):
+        distance = 0
+        for line in self.lines:
+            distance += line.distance * self.map_scale
+        text = "{:.2f} miles".format(distance)
+        return text
