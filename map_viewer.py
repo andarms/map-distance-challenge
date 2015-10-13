@@ -72,7 +72,7 @@ class MapViewer(GameState):
     def create_new_line(self, pos):
         line = Line(pos)
         self.lines.append(line)
-        text = "{:.2f} miles".format(0.0)
+        text = "{:.2f} miles - {:.2f} kms".format(0.0, 0.0)
         self.distance_label = Label(self.font, 20, text,
                                     self.text_color, {"topleft": (0, 0)},
                                     self.bg_color)
@@ -95,5 +95,6 @@ class MapViewer(GameState):
         distance = 0
         for line in self.lines:
             distance += line.distance * self.map_scale
-        text = "{:.2f} miles".format(distance)
+        kms = distance * 1.60934  # simple conversion
+        text = "{:.2f} miles - {:.2f} kms".format(distance, kms)
         return text

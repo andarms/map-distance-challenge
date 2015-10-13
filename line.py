@@ -1,5 +1,4 @@
 from math import sqrt
-from random import randint
 
 import pygame as pg
 
@@ -9,13 +8,13 @@ class Line(object):
     def __init__(self, start):
         self.start = start
         self.end = start
-        self.point_color = [randint(0, 255) for _ in range(3)]
+        self.point_color = (0, 0, 0)
         self.moving = True
 
     def update(self):
         self.distance = self.calculate_distance()
         lerp_val = get_lerp_val(self.distance)
-        self.color = lerp(pg.Color('cyan'), pg.Color('orange'), lerp_val)
+        self.color = lerp(pg.Color('cyan'), pg.Color('Chartreuse'), lerp_val)
 
     def draw(self, surface):
         pg.draw.line(surface, self.color, self.start, self.end, 3)
