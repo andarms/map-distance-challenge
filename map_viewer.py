@@ -45,7 +45,8 @@ class MapViewer(GameState):
                 self.line.end = event.pos
 
     def update(self, dt):
-        pass
+        if self.line:
+            self.line.update()
 
     def draw(self, surface):
         surface.fill(pg.Color("gray2"))
